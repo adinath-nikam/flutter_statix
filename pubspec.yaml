@@ -1,5 +1,5 @@
 name: flutter_statix
-description: A starting point for Dart libraries or applications.
+description: A simple CLI tool that automatically runs flutter test — ideal for use in CI/CD pipelines or as a pre-launch step.
 version: 1.0.0
 homepage: https://github.com/adinath-nikam/flutter_statix
 repository: https://github.com/adinath-nikam/flutter_statix
