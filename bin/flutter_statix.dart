@@ -16,11 +16,21 @@ Future<void> main(List<String> args) async {
   final analyzeResult = await Process.run('dart', ['analyze']);
   await analysisFile.writeAsString(analyzeResult.stdout);
 
+  final scriptPath = p.join(
+    p.dirname(Platform.script.toFilePath()),
+    'bin/dart_parser.dart',
+  );
+
   // Step 3: Run dart_parser.dart
   print('Running dart_parser.dart...');
   final parserResult = await Process.start(
     'dart',
-    ['run', 'bin/dart_parser.dart', 'dart_analysis.txt', 'dart_analysis_report.json'],
+    [
+      'run',
+      'flutter_statix:dart_parser',
+      'dart_analysis.txt',
+      'dart_analysis_report.json'
+    ],
   );
   await stdout.addStream(parserResult.stdout);
   await stderr.addStream(parserResult.stderr);
@@ -34,7 +44,7 @@ Future<void> main(List<String> args) async {
   print('Generating HTML report...');
   final reportResult = await Process.start(
     'dart',
-    ['run', 'bin/generate_html_report.dart'],
+    ['run', 'flutter_statix:generate_html_report'],
   );
   await stdout.addStream(reportResult.stdout);
   await stderr.addStream(reportResult.stderr);
@@ -43,5 +53,4 @@ Future<void> main(List<String> args) async {
     print('generate_html_report.dart failed with exit code $reportExitCode');
     exit(reportExitCode);
   }
-
 }

@@ -17,4 +17,6 @@ dev_dependencies:
   test: ^1.24.0
 
 executables:
-  flutter_sca: bin/flutter_statix
+  flutter_statix: bin/flutter_statix.dart
+  dart_parser: bin/dart_parser.dart
+  generate_html: bin/generate_html_report.dart
