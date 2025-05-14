@@ -1,40 +1,18 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# 🧪 my_test_runner
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages). 
+[![Pub Version](https://miro.medium.com/v2/resize:fit:1400/1*L4cZRB82nitqRygZ9dJdTA.png)](https://github.com/adinath-nikam/flutter_statix)
+[![Dart SDK](https://img.shields.io/badge/dart-%3E%3D2.17.0-blue.svg)](https://dart.dev)
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages). 
--->
+A simple CLI tool that automatically runs `flutter test` — ideal for use in CI/CD pipelines or as a pre-launch step.
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+---
 
-## Features
+## 🚀 Getting Started
+[lib](lib)
+### 📦 Install
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+Add `flutter_statix` to your `dev_dependencies` in `pubspec.yaml`:
 
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
-
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
-
-```dart
-const like = 'sample';
-```
-
-## Additional information
-
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
-# flutter_statix
+```yaml
+dev_dependencies:
+  flutter_statix: ^0.0.1
