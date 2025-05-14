@@ -57,5 +57,5 @@ void main() async {
     const JsonEncoder.withIndent('  ').convert({'issues': issues}),
   );
 
-  print('✅ ${issues.length} issues written to sonar-dart-report.json');
+  print('✅ ${issues.length} issues written to dart_analysis_report.json');
 }

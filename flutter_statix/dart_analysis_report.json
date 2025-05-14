@@ -1,0 +1,32 @@
+{
+  "issues": [
+    {
+      "engineId": "dart",
+      "ruleId": "undefined_function",
+      "severity": "MAJOR",
+      "type": "CODE_SMELL",
+      "primaryLocation": {
+        "message": "The function 'Awesome' isn't defined. Try importing the library that defines 'Awesome', correcting the name to the name of an existing function, or defining a function named 'Awesome'.",
+        "filePath": "example/flutter_statix_example.dart",
+        "textRange": {
+          "startLine": 4,
+          "startColumn": 17
+        }
+      }
+    },
+    {
+      "engineId": "dart",
+      "ruleId": "unused_import",
+      "severity": "MINOR",
+      "type": "CODE_SMELL",
+      "primaryLocation": {
+        "message": "Unused import: 'package:flutter_statix/flutter_statix.dart'. Try removing the import directive.",
+        "filePath": "example/flutter_statix_example.dart",
+        "textRange": {
+          "startLine": 1,
+          "startColumn": 8
+        }
+      }
+    }
+  ]
+}

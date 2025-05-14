@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dart Static Analysis Report</title>
+<style>
+body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
+h1 { text-align: center; }
+table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+th { background-color: #4CAF50; color: white; }
+tr:nth-child(even) { background-color: #f2f2f2; }
+.MINOR { color: #FFA500; }
+.MAJOR { color: #FF5722; }
+.CRITICAL { color: #f44336; font-weight: bold; }
+.INFO { color: #2196f3; }
+</style>
+</head>
+<body>
+<h1>Dart Static Code Analysis Report</h1>
+<table>
+<tr><th>Severity</th><th>File</th><th>Line</th><th>Column</th><th>Message</th><th>Rule ID</th></tr>
+<tr class="MAJOR"><td class="MAJOR">MAJOR</td><td>example/flutter_statix_example.dart</td><td>4</td><td>17</td><td>The function &#39;Awesome&#39; isn&#39;t defined. Try importing the library that defines &#39;Awesome&#39;, correcting the name to the name of an existing function, or defining a function named &#39;Awesome&#39;.</td><td>undefined_function</td></tr>
+<tr class="MINOR"><td class="MINOR">MINOR</td><td>example/flutter_statix_example.dart</td><td>1</td><td>8</td><td>Unused import: &#39;package:flutter_statix&#47;flutter_statix.dart&#39;. Try removing the import directive.</td><td>unused_import</td></tr>
+</table>
+</body></html>

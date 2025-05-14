@@ -1,0 +1,6 @@
+Analyzing flutter_statix...
+
+  error - example/flutter_statix_example.dart:4:17 - The function 'Awesome' isn't defined. Try importing the library that defines 'Awesome', correcting the name to the name of an existing function, or defining a function named 'Awesome'. - undefined_function
+warning - example/flutter_statix_example.dart:1:8 - Unused import: 'package:flutter_statix/flutter_statix.dart'. Try removing the import directive. - unused_import
+
+2 issues found.

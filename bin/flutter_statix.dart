@@ -20,7 +20,7 @@ Future<void> main(List<String> args) async {
   print('Running dart_parser.dart...');
   final parserResult = await Process.start(
     'dart',
-    ['run', 'bin/dart_parser.dart', 'dart_analysis.txt', 'dart-analysis-report.json'],
+    ['run', 'bin/dart_parser.dart', 'dart_analysis.txt', 'dart_analysis_report.json'],
   );
   await stdout.addStream(parserResult.stdout);
   await stderr.addStream(parserResult.stderr);
