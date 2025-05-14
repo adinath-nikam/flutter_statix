@@ -1,4 +1,4 @@
-# 🧪 my_test_runner
+# 🧪 flutter_statix
 
 [![Pub Version](https://miro.medium.com/v2/resize:fit:1400/1*L4cZRB82nitqRygZ9dJdTA.png)](https://github.com/adinath-nikam/flutter_statix)
 [![Dart SDK](https://img.shields.io/badge/dart-%3E%3D2.17.0-blue.svg)](https://dart.dev)
