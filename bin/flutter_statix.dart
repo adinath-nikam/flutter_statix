@@ -6,92 +6,98 @@ Future<void> main(List<String> args) async {
   // Step 1: Create flutter_statix directory if it doesn't exist
   final statixDir = Directory('flutter_statix');
   if (!await statixDir.exists()) {
-    print('Creating flutter_statix directory...');
+    print('📁 Creating flutter_statix directory...');
     await statixDir.create();
   }
 
-  // Step 2: Run dart analyze and save output
-  print('Running dart analyze...');
+  // Step 2: Run `dart analyze` and save output
+  print('🔍 Running dart analyze...');
   final analysisFile = File('flutter_statix/dart_analysis.txt');
   final analyzeResult = await Process.run('dart', ['analyze']);
   await analysisFile.writeAsString(analyzeResult.stdout);
 
   // Step 3: Run dart_parser.dart
-  print('Running dart_parser.dart...');
-  final parserResult = await Process.start(
+  print('🧩 Running dart_parser.dart...');
+  final parserProcess = await Process.start(
     'dart',
     [
       'run',
       'flutter_statix:dart_parser',
       'dart_analysis.txt',
-      'dart_analysis_report.json'
+      'dart_analysis_report.json',
     ],
   );
-  await stdout.addStream(parserResult.stdout);
-  await stderr.addStream(parserResult.stderr);
-  final parserExitCode = await parserResult.exitCode;
+
+  await stdout.addStream(parserProcess.stdout);
+  await stderr.addStream(parserProcess.stderr);
+
+  final parserExitCode = await parserProcess.exitCode;
   if (parserExitCode != 0) {
-    print('dart_parser.dart failed with exit code $parserExitCode');
+    print('❌ dart_parser.dart failed with exit code $parserExitCode');
     exit(parserExitCode);
   }
 
-  // Step 4: Run generate_html_report.dart
-  print('Generating HTML report...');
-  final reportResult = await Process.start(
+  // Step 4: Generate HTML analysis report
+  print('📝 Generating HTML analysis report...');
+  final reportProcess = await Process.start(
     'dart',
     ['run', 'flutter_statix:generate_html_report'],
   );
-  await stdout.addStream(reportResult.stdout);
-  await stderr.addStream(reportResult.stderr);
-  final reportExitCode = await reportResult.exitCode;
+
+  await stdout.addStream(reportProcess.stdout);
+  await stderr.addStream(reportProcess.stderr);
+
+  final reportExitCode = await reportProcess.exitCode;
   if (reportExitCode != 0) {
-    print('generate_html_report.dart failed with exit code $reportExitCode');
+    print('❌ generate_html_report.dart failed with exit code $reportExitCode');
     exit(reportExitCode);
   }
 
-  // Step 5: Run flutter test --coverage
-  // Run flutter test with custom coverage path
-  print('Running flutter test...');
-
-  // Run flutter test with coverage — output is written to coverage/lcov.info
-  final testResult = await Process.start(
+  // Step 5: Run flutter tests with coverage
+  print('🧪 Running flutter tests with coverage...');
+  final testProcess = await Process.start(
     'flutter',
     ['test', '--coverage'],
   );
-  await stdout.addStream(testResult.stdout);
-  await stderr.addStream(testResult.stderr);
-  final testExitCode = await testResult.exitCode;
 
+  await stdout.addStream(testProcess.stdout);
+  await stderr.addStream(testProcess.stderr);
+
+  final testExitCode = await testProcess.exitCode;
   if (testExitCode != 0) {
-    print('Tests failed with exit code $testExitCode');
+    print('❌ Tests failed with exit code $testExitCode');
     exit(testExitCode);
   }
 
-  // Copy lcov.info to flutter_statix/coverage/
+  // Step 6: Copy coverage file to flutter_statix/coverage/
   final originalLcov = File('coverage/lcov.info');
-  final customLcov = File('flutter_statix/coverage/lcov.info');
+  final targetLcov = File('flutter_statix/coverage/lcov.info');
 
   if (!await originalLcov.exists()) {
     print('❌ coverage/lcov.info not found. Something went wrong.');
     exit(1);
   }
 
-  // Ensure directory exists
-  await customLcov.parent.create(recursive: true);
-  await originalLcov.copy(customLcov.path);
+  final lcovContent = await originalLcov.readAsString();
+  if (lcovContent.trim().isEmpty) {
+    print('⚠️ lcov.info is empty. Skipping HTML coverage generation.');
+    exit(0);
+  }
 
-  // Generate HTML report
-  print('Generating HTML report...');
+  await targetLcov.parent.create(recursive: true);
+  await originalLcov.copy(targetLcov.path);
+
+  // Step 7: Generate HTML coverage report using genhtml
+  print('📊 Generating HTML coverage report...');
   final genhtmlResult = await Process.run(
     'genhtml',
-    [customLcov.path, '-o', 'flutter_statix/coverage/html'],
+    [targetLcov.path, '-o', 'flutter_statix/coverage/html'],
   );
 
   if (genhtmlResult.exitCode == 0) {
-    print('✅ HTML report generated at: flutter_statix/coverage/html/index.html');
+    print('✅ Coverage report available at: flutter_statix/coverage/html/index.html');
   } else {
     print('❌ genhtml failed:\n${genhtmlResult.stderr}');
     exit(genhtmlResult.exitCode);
   }
-
 }

@@ -1,44 +1,62 @@
 import 'dart:convert';
 import 'dart:io';
 
-void main() async {
+Future<void> main() async {
   final inputFile = File('flutter_statix/dart_analysis_report.json');
   final outputFile = File('flutter_statix/dart_analysis_report.html');
 
+  // Step 1: Check if input JSON exists
   if (!await inputFile.exists()) {
     print('❌ Error: Report file not found at ${inputFile.path}');
     exit(1);
   }
 
+  // Step 2: Parse and validate JSON
   final content = await inputFile.readAsString();
-  final data = jsonDecode(content) as Map<String, dynamic>;
+  if (content.trim().isEmpty) {
+    print('⚠️ Warning: Report file is empty. Skipping HTML generation.');
+    exit(0);
+  }
 
-  final issues = data['issues'] as List<dynamic>;
+  late final List<dynamic> issues;
+  try {
+    final data = jsonDecode(content) as Map<String, dynamic>;
+    issues = data['issues'] as List<dynamic>;
+  } catch (e) {
+    print('❌ Failed to parse JSON report: $e');
+    exit(1);
+  }
 
-  final buffer = StringBuffer();
-  buffer.writeln('<!DOCTYPE html>');
-  buffer.writeln('<html lang="en">');
-  buffer.writeln('<head>');
-  buffer.writeln('<meta charset="UTF-8">');
-  buffer.writeln('<meta name="viewport" content="width=device-width, initial-scale=1.0">');
-  buffer.writeln('<title>Dart Static Analysis Report</title>');
-  buffer.writeln('<style>');
-  buffer.writeln('body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }');
-  buffer.writeln('h1 { text-align: center; }');
-  buffer.writeln('table { width: 100%; border-collapse: collapse; margin-top: 20px; }');
-  buffer.writeln('th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }');
-  buffer.writeln('th { background-color: #4CAF50; color: white; }');
-  buffer.writeln('tr:nth-child(even) { background-color: #f2f2f2; }');
-  buffer.writeln('.MINOR { color: #FFA500; }'); // orange
-  buffer.writeln('.MAJOR { color: #FF5722; }'); // red-orange
-  buffer.writeln('.CRITICAL { color: #f44336; font-weight: bold; }'); // red
-  buffer.writeln('.INFO { color: #2196f3; }'); // blue
-  buffer.writeln('</style>');
-  buffer.writeln('</head>');
-  buffer.writeln('<body>');
-  buffer.writeln('<h1>Dart Static Code Analysis Report</h1>');
-  buffer.writeln('<table>');
-  buffer.writeln('<tr><th>Severity</th><th>File</th><th>Line</th><th>Column</th><th>Message</th><th>Rule ID</th></tr>');
+  if (issues.isEmpty) {
+    print('ℹ️ No issues found in the report. Skipping HTML generation.');
+    exit(0);
+  }
+
+  // Step 3: Generate HTML
+  final buffer = StringBuffer()
+    ..writeln('<!DOCTYPE html>')
+    ..writeln('<html lang="en">')
+    ..writeln('<head>')
+    ..writeln('<meta charset="UTF-8">')
+    ..writeln('<meta name="viewport" content="width=device-width, initial-scale=1.0">')
+    ..writeln('<title>Dart Static Analysis Report</title>')
+    ..writeln('<style>')
+    ..writeln('body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }')
+    ..writeln('h1 { text-align: center; }')
+    ..writeln('table { width: 100%; border-collapse: collapse; margin-top: 20px; }')
+    ..writeln('th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }')
+    ..writeln('th { background-color: #4CAF50; color: white; }')
+    ..writeln('tr:nth-child(even) { background-color: #f2f2f2; }')
+    ..writeln('.MINOR { color: #FFA500; }') // Orange
+    ..writeln('.MAJOR { color: #FF5722; }') // Red-orange
+    ..writeln('.CRITICAL { color: #f44336; font-weight: bold; }') // Red
+    ..writeln('.INFO { color: #2196f3; }') // Blue
+    ..writeln('</style>')
+    ..writeln('</head>')
+    ..writeln('<body>')
+    ..writeln('<h1>Dart Static Code Analysis Report</h1>')
+    ..writeln('<table>')
+    ..writeln('<tr><th>Severity</th><th>File</th><th>Line</th><th>Column</th><th>Message</th><th>Rule ID</th></tr>');
 
   for (final issue in issues) {
     final severity = issue['severity'] ?? 'INFO';
@@ -53,18 +71,21 @@ void main() async {
     buffer.writeln(
       '<tr class="$severity">'
           '<td class="$severity">$severity</td>'
-          '<td>$file</td>'
+          '<td>${htmlEscape.convert(file)}</td>'
           '<td>$line</td>'
           '<td>$column</td>'
           '<td>${htmlEscape.convert(message)}</td>'
-          '<td>$ruleId</td>'
+          '<td>${htmlEscape.convert(ruleId)}</td>'
           '</tr>',
     );
   }
 
-  buffer.writeln('</table>');
-  buffer.writeln('</body></html>');
+  buffer
+    ..writeln('</table>')
+    ..writeln('</body>')
+    ..writeln('</html>');
 
+  // Step 4: Write output file
   await outputFile.create(recursive: true);
   await outputFile.writeAsString(buffer.toString());
 
