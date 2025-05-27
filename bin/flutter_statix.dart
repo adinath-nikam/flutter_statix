@@ -1,8 +1,10 @@
 library flutter_statix;
 
 import 'dart:io';
+import 'developer_info.dart';
 
 Future<void> main(List<String> args) async {
+  printDeveloperBanner();
   // Step 1: Create flutter_statix directory if it doesn't exist
   final statixDir = Directory('flutter_statix');
   if (!await statixDir.exists()) {
