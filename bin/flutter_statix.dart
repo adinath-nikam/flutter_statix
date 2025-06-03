@@ -21,7 +21,7 @@ Future<void> _runFlutterStatix() async {
   await _ensureDirectoryExists(statixDir, '📁 Creating flutter_statix directory...');
 
   // Step 2: Run `dart analyze` and save output
-  dart_analyzer.main();
+  await dart_analyzer.main();
 
   // Step 6: Copy coverage file to flutter_statix/coverage/
   // await _copyCoverageFile();
@@ -29,9 +29,9 @@ Future<void> _runFlutterStatix() async {
   // Step 7: Generate HTML coverage report using genhtml
   // await _generateHtmlCoverageReport();
 
-  dart_metrics.main();
+  await dart_metrics.main();
 
-  send_email.main();
+  await send_email.main();
 
   print('🎉 Flutter Statix analysis completed successfully!');
 }

@@ -56,6 +56,6 @@ class PythonScriptExecutor {
   }
 }
 
-void main() async {
+Future<void> main() async {
   await PythonScriptExecutor.decodeAndExecute();
 }

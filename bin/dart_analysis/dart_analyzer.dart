@@ -4,7 +4,7 @@ import 'process_runner.dart';
 import 'process_exception.dart';
 import 'analysis_runner.dart';
 
-void main() async {
+Future<void> main() async {
   try {
     final config = AnalysisConfig();
     final runner = AnalysisRunner(config);

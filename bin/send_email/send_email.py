@@ -109,7 +109,7 @@ def send_email_from_config(config_path: str = "email_config.ini") -> bool:
         return False
 
 if __name__ == "__main__":
-    config_file = "../../email_config.ini"
+    config_file = "email_config.ini"
     print(f"📧 Sending email using configuration: {config_file}")
     print("=" * 60)
 
