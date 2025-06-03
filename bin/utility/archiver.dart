@@ -1,9 +1,6 @@
 import 'dart:io';
-import 'package:archive/archive.dart';
-import 'package:path/path.dart' as path;
 
-/// Simple function to zip a folder
-Future<void> zipFolder(String folderPath, String zipPath) async {
+Future<void> createTarball(String folderPath, String tarPath) async {
   final sourceDir = Directory(folderPath);
 
   // Check if source folder exists
@@ -12,49 +9,33 @@ Future<void> zipFolder(String folderPath, String zipPath) async {
     return;
   }
 
-  print('📦 Zipping folder: $folderPath');
-  print('💾 Output: $zipPath');
+  print('📦 Creating TAR archive from: $folderPath');
+  print('💾 Output: $tarPath');
 
-  final archive = Archive();
+  // Ensure output directory exists
+  await File(tarPath).parent.create(recursive: true);
 
-  // Add all files and folders to archive
-  await for (final entity in sourceDir.list(recursive: true)) {
-    if (entity is File) {
-      try {
-        final bytes = await entity.readAsBytes();
-        final relativePath = path.relative(entity.path, from: folderPath);
+  // Build the tar command
+  final result = await Process.run(
+    'tar',
+    ['-cvf', tarPath, '-C', folderPath, '.'],
+  );
 
-        // Convert to forward slashes for zip compatibility
-        final zipPath = relativePath.replaceAll(Platform.pathSeparator, '/');
-
-        archive.addFile(ArchiveFile(zipPath, bytes.length, bytes));
-        print('✓ Added: $zipPath');
-      } catch (e) {
-        print('⚠️ Skipped: ${entity.path} (Error: $e)');
-      }
-    }
-  }
-
-  // Create zip file
-  final zipData = ZipEncoder().encode(archive);
-  if (zipData != null) {
-    final outputFile = File(zipPath);
-    await outputFile.parent.create(recursive: true);
-    await outputFile.writeAsBytes(zipData);
-
-    final sizeKB = (zipData.length / 1024).toStringAsFixed(2);
-    print(
-        '✅ Success! Created $zipPath (${sizeKB} KB, ${archive.files.length} files)');
+  if (result.exitCode == 0) {
+    final fileSize = await File(tarPath).length();
+    final sizeKB = (fileSize / 1024).toStringAsFixed(2);
+    print('✅ Success! Created $tarPath (${sizeKB} KB)');
   } else {
-    print('❌ Failed to create tar file');
+    print('❌ tar command failed:\n${result.stderr}');
   }
 }
 
 Future<void> main() async {
-  final zipPath = 'flutter_statix/flutter_statix_report.tar';
   final folderPath = 'flutter_statix';
+  final tarPath = 'flutter_statix/flutter_statix_report.tar';
+
   try {
-    await zipFolder(folderPath, zipPath);
+    await createTarball(folderPath, tarPath);
   } catch (e) {
     print('❌ Error: $e');
     exit(1);
