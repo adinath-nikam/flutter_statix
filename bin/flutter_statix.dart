@@ -113,7 +113,6 @@ Future<void> _generateHtmlCoverageReport() async {
       targetLcov.path,
       '-o', outputDir,
       '--show-details',
-      '--highlight',
       '--legend',
     ],
   );

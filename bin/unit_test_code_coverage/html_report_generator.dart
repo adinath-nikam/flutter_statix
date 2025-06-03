@@ -59,7 +59,6 @@ class HtmlReportGenerator {
       _lcovPath,
       '-o', _outputDir,
       '--show-details',
-      '--highlight',
       '--legend',
     ]);
 
