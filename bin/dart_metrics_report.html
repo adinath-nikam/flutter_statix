@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dart Metrics Report</title>
+    <style>
+        :root {
+            --color-excellent: #d4edda;
+            --color-good: #d1ecf1;
+            --color-moderate: #fff3cd;
+            --color-poor: #f8d7da;
+            --color-legacy: #e2e3e5;
+            --border-color: #dee2e6;
+            --text-color: #212529;
+            --bg-color: #ffffff;
+            --header-bg: #f8f9fa;
+        }
+        
+        * { box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #34495e;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        
+        .info-panel {
+            background: var(--header-bg);
+            padding: 20px;
+            margin-bottom: 30px;
+            border-left: 4px solid #007bff;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .info-panel h3 {
+            margin-top: 0;
+            color: #495057;
+        }
+        
+        .info-panel ul {
+            margin-bottom: 0;
+        }
+        
+        .info-panel li {
+            margin-bottom: 5px;
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 12px 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: var(--header-bg);
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .cmi-excellent { background-color: var(--color-excellent); }
+        .cmi-good { background-color: var(--color-good); }
+        .cmi-moderate { background-color: var(--color-moderate); }
+        .cmi-poor { background-color: var(--color-poor); }
+        .cmi-legacy { background-color: var(--color-legacy); }
+        
+        .code-toggle {
+            cursor: pointer;
+            color: #007bff;
+            text-decoration: underline;
+            font-size: 0.9em;
+            margin-left: 8px;
+        }
+        
+        .code-toggle:hover {
+            color: #0056b3;
+        }
+        
+        .code-row {
+            display: none;
+        }
+        
+        .code-container {
+            max-height: 400px;
+            overflow-y: auto;
+            border-radius: 4px;
+        }
+        
+        pre {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 0;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.4;
+            border-radius: 4px;
+        }
+        
+        .file-stats {
+            font-style: italic;
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+        
+        .metric-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        .high-complexity { background-color: #dc3545; color: white; }
+        .medium-complexity { background-color: #ffc107; color: black; }
+        .low-complexity { background-color: #28a745; color: white; }
+        
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            table { font-size: 0.9em; }
+            th, td { padding: 8px 4px; }
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Dart Code Metrics Analysis Report</h1>
+    
+    <div class="info-panel">
+        <h3>📏 Code Maintainability Index (CMI) Scale</h3>
+        <ul>
+            <li><strong>85-100:</strong> 🟢 Excellent maintainability - Well-structured, easy to maintain</li>
+            <li><strong>70-84:</strong> 🔵 Good maintainability - Minor improvements possible</li>
+            <li><strong>50-69:</strong> 🟡 Moderate maintainability - Consider refactoring</li>
+            <li><strong>25-49:</strong> 🔴 Poor maintainability - Needs significant refactoring</li>
+            <li><strong>0-24:</strong> ⚫ Legacy code - Requires immediate attention</li>
+        </ul>
+        <p><em>CMI combines lines of code, cyclomatic complexity, nesting depth, and other factors to assess code maintainability.</em></p>
+    </div>
+
+<h2>📄 flutter_statix_base.dart</h2>
+<div class="file-stats">
+Path: <code>../lib/src/flutter_statix_base.dart</code> | 
+Functions: 9 | 
+Avg CMI: 48.0 | 
+Total Lines: 398
+</div>
+<table>
+        <tr>
+            <th>Method Name</th>
+            <th>Lines</th>
+            <th>Nesting</th>
+            <th>Complexity</th>
+            <th>Returns</th>
+            <th>Booleans</th>
+            <th>Switch Cases</th>
+            <th>CMI Score</th>
+        </tr>
+    
+<tr class="cmi-excellent">
+<td>
+add
+<span class="code-toggle" onclick="toggleCode(0)">
+View Code</span>
+</td>
+<td>5</td>
+<td>0</td>
+<td><span class="metric-badge low-complexity">LOW</span> 1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td><strong>100.0</strong></td>
+</tr>
+<tr id="code-0" class="code-row">
+<td colspan="8">
+<div class="code-container">
+<pre><code>&#47;&#47;&#47; Excellent Maintainability (CMI: ~90-100)
+&#47;&#47;&#47; Simple, single-purpose function
+int add(int a, int b) {
+  return a + b;
+}</code></pre>
+</div>
+</td>
+</tr>
+<tr class="cmi-excellent">
+<td>
+getFormattedName
+<span class="code-toggle" onclick="toggleCode(1)">
+View Code</span>
+</td>
+<td>5</td>
+<td>0</td>
+<td><span class="metric-badge low-complexity">LOW</span> 1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td><strong>100.0</strong></td>
+</tr>
+<tr id="code-1" class="code-row">
+<td colspan="8">
+<div class="code-container">
+<pre><code>&#47;&#47;&#47; Excellent Maintainability (CMI: ~85-95)
+&#47;&#47;&#47; Simple getter with minimal logic
+String getFormattedName(String firstName, String lastName) {
+  return &#39;$firstName $lastName&#39;;
+}</code></pre>
+</div>
+</td>
+</tr>
+<tr class="cmi-good">
+<td>
+isValidEmail
+<span class="code-toggle" onclick="toggleCode(2)">
+View Code</span>
+</td>
+<td>8</td>
+<td>1</td>
+<td><span class="metric-badge low-complexity">LOW</span> 3</td>
+<td>2</td>
+<td>1</td>
+<td>0</td>
+<td><strong>73.7</strong></td>
+</tr>
+<tr id="code-2" class="code-row">
+<td colspan="8">
+<div class="code-container">
+<pre><code>&#47;&#47;&#47; Good Maintainability (CMI: ~70-84)
+&#47;&#47;&#47; Moderate complexity with single responsibility
+bool isValidEmail(String email) {
+  if (email.isEmpty) return false;
+
+  final emailRegex = RegExp(r&#39;^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$&#39;);
+  return emailRegex.hasMatch(email) &amp;&amp; email.length &lt;= 254;
+}</code></pre>
+</div>
+</td>
+</tr>
+<tr class="cmi-good">
+<td>
+getEvenNumbers
+<span class="code-toggle" onclick="toggleCode(3)">
+View Code</span>
+</td>
+<td>13</td>
+<td>2</td>
+<td><span class="metric-badge low-complexity">LOW</span> 3</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td><strong>71.3</strong></td>
+</tr>
+<tr id="code-3" class="code-row">
+<td colspan="8">
+<div class="code-container">
+<pre><code>&#47;&#47;&#47; Good Maintainability (CMI: ~75-85)
+&#47;&#47;&#47; Simple loop with basic condition
+List&lt;int&gt; getEvenNumbers(List&lt;int&gt; numbers) {
+  List&lt;int&gt; evenNumbers = [];
+
+  for (int number in numbers) {
+    if (number % 2 == 0) {
+      evenNumbers.add(number);
+    }
+  }
+
+  return evenNumbers;
+}</code></pre>
+</div>
+</td>
+</tr>
+<tr class="cmi-poor">
+<td>
+categorizeAge
+<span class="code-toggle" onclick="toggleCode(4)">
+View Code</span>
+</td>
+<td>15</td>
+<td>4</td>
+<td><span class="metric-badge low-complexity">LOW</span> 5</td>
+<td>5</td>
+<td>0</td>
+<td>0</td>
+<td><strong>37.2</strong></td>
+</tr>
+<tr id="code-4" class="code-row">
+<td colspan="8">
+<div class="code-container">
+<pre><code>&#47;&#47;&#47; Moderate Maintainability (CMI: ~50-69)
+&#47;&#47;&#47; Multiple conditions and moderate nesting
+String categorizeAge(int age) {
+  if (age &lt; 0) {
+    return &#39;Invalid age&#39;;
+  } else if (age &lt; 13) {
+    return &#39;Child&#39;;
+  } else if (age &lt; 20) {
+    return &#39;Teenager&#39;;
+  } else if (age &lt; 60) {
+    return &#39;Adult&#39;;
+  } else {
+    return &#39;Senior&#39;;
+  }
+}</code></pre>
+</div>
+</td>
+</tr>
+<tr class="cmi-poor">
+<td>
+validatePassword
+<span class="code-toggle" onclick="toggleCode(5)">
+View Code</span>
+</td>
+<td>25</td>
+<td>1</td>
+<td><span class="metric-badge medium-complexity">MED</span> 6</td>
+<td>6</td>
+<td>4</td>
+<td>0</td>
+<td><strong>44.1</strong></td>
+</tr>
+<tr id="code-5" class="code-row">
+<td colspan="8">
+<div class="code-container">
+<pre><code>&#47;&#47;&#47; Moderate Maintainability (CMI: ~55-65)
+&#47;&#47;&#47; Multiple return statements and boolean expressions
+String validatePassword(String password) {
+  if (password.length &lt; 8) {
+    return &#39;Password too short&#39;;
+  }
+
+  if (!password.contains(RegExp(r&#39;[A-Z]&#39;))) {
+    return &#39;Password must contain uppercase letter&#39;;
+  }
+
+  if (!password.contains(RegExp(r&#39;[a-z]&#39;))) {
+    return &#39;Password must contain lowercase letter&#39;;
+  }
+
+  if (!password.contains(RegExp(r&#39;[0-9]&#39;))) {
+    return &#39;Password must contain number&#39;;
+  }
+
+  if (!password.contains(RegExp(r&#39;[!@#$%^&amp;*(),.?&quot;:{}|&lt;&gt;]&#39;))) {
+    return &#39;Password must contain special character&#39;;
+  }
+
+  return &#39;Valid password&#39;;
+}</code></pre>
+</div>
+</td>
+</tr>
+<tr class="cmi-legacy">
+<td>
+processUserData
+<span class="code-toggle" onclick="toggleCode(6)">
+View Code</span>
+</td>
+<td>62</td>
+<td>9</td>
+<td><span class="metric-badge high-complexity">HIGH</span> 16</td>
+<td>8</td>
+<td>5</td>
+<td>0</td>
+<td><strong>0.0</strong></td>
+</tr>
+<tr id="code-6" class="code-row">
+<td colspan="8">
+<div class="code-container">
+<pre><code>&#47;&#47;&#47; Poor Maintainability (CMI: ~25-49)
+&#47;&#47;&#47; High nesting, multiple conditions, complex logic
+Map&lt;String, dynamic&gt; processUserData(Map&lt;String, dynamic&gt; userData) {
+  Map&lt;String, dynamic&gt; result = {};
+
+  if (userData.containsKey(&#39;name&#39;) &amp;&amp; userData[&#39;name&#39;] != null) {
+    if (userData[&#39;name&#39;].toString().isNotEmpty) {
+      result[&#39;name&#39;] = userData[&#39;name&#39;].toString().trim();
+
+      if (userData.containsKey(&#39;email&#39;) &amp;&amp; userData[&#39;email&#39;] != null) {
+        String email = userData[&#39;email&#39;].toString().toLowerCase();
+
+        if (email.contains(&#39;@&#39;) &amp;&amp; email.contains(&#39;.&#39;)) {
+          result[&#39;email&#39;] = email;
+
+          if (userData.containsKey(&#39;age&#39;) &amp;&amp; userData[&#39;age&#39;] != null) {
+            try {
+              int age = int.parse(userData[&#39;age&#39;].toString());
+
+              if (age &gt;= 0 &amp;&amp; age &lt;= 150) {
+                result[&#39;age&#39;] = age;
+
+                if (userData.containsKey(&#39;preferences&#39;)) {
+                  if (userData[&#39;preferences&#39;] is Map) {
+                    result[&#39;preferences&#39;] = userData[&#39;preferences&#39;];
+                  } else {
+                    result[&#39;preferences&#39;] = {};
+                  }
+                } else {
+                  result[&#39;preferences&#39;] = {};
+                }
+              } else {
+                result[&#39;error&#39;] = &#39;Invalid age range&#39;;
+                return result;
+              }
+            } catch (e) {
+              result[&#39;error&#39;] = &#39;Invalid age format&#39;;
+              return result;
+            }
+          } else {
+            result[&#39;error&#39;] = &#39;Age is required&#39;;
+            return result;
+          }
+        } else {
+          result[&#39;error&#39;] = &#39;Invalid email format&#39;;
+          return result;
+        }
+      } else {
+        result[&#39;error&#39;] = &#39;Email is required&#39;;
+        return result;
+      }
+    } else {
+      result[&#39;error&#39;] = &#39;Name cannot be empty&#39;;
+      return result;
+    }
+  } else {
+    result[&#39;error&#39;] = &#39;Name is required&#39;;
+    return result;
+  }
+
+  return result;
+}</code></pre>
+</div>
+</td>
+</tr>
+<tr class="cmi-legacy">
+<td>
+calculateShippingCost
+<span class="code-toggle" onclick="toggleCode(7)">
+View Code</span>
+</td>
+<td>65</td>
+<td>4</td>
+<td><span class="metric-badge high-complexity">HIGH</span> 13</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td><strong>6.0</strong></td>
+</tr>
+<tr id="code-7" class="code-row">
+<td colspan="8">
+<div class="code-container">
+<pre><code>&#47;&#47;&#47; Poor Maintainability (CMI: ~30-45)
+&#47;&#47;&#47; Complex switch statement with nested conditions
+String calculateShippingCost(String country, double weight, bool isPriority, bool isFragile) {
+  double baseCost = 0.0;
+  double weightMultiplier = 1.0;
+  double priorityMultiplier = 1.0;
+  double fragileMultiplier = 1.0;
+
+  switch (country.toLowerCase()) {
+    case &#39;usa&#39;:
+    case &#39;canada&#39;:
+      baseCost = 10.0;
+      if (weight &gt; 5.0) {
+        weightMultiplier = 1.5;
+        if (weight &gt; 10.0) {
+          weightMultiplier = 2.0;
+          if (weight &gt; 20.0) {
+            weightMultiplier = 3.0;
+          }
+        }
+      }
+      break;
+
+    case &#39;uk&#39;:
+    case &#39;germany&#39;:
+    case &#39;france&#39;:
+      baseCost = 15.0;
+      if (weight &gt; 3.0) {
+        weightMultiplier = 1.8;
+        if (weight &gt; 8.0) {
+          weightMultiplier = 2.5;
+        }
+      }
+      break;
+
+    case &#39;japan&#39;:
+    case &#39;australia&#39;:
+      baseCost = 25.0;
+      if (weight &gt; 2.0) {
+        weightMultiplier = 2.0;
+      }
+      break;
+
+    default:
+      baseCost = 30.0;
+      weightMultiplier = 2.5;
+  }
+
+  if (isPriority) {
+    priorityMultiplier = 1.5;
+    if (country.toLowerCase() == &#39;usa&#39; || country.toLowerCase() == &#39;canada&#39;) {
+      priorityMultiplier = 1.3;
+    }
+  }
+
+  if (isFragile) {
+    fragileMultiplier = 1.25;
+    if (weight &gt; 10.0) {
+      fragileMultiplier = 1.5;
+    }
+  }
+
+  double totalCost = baseCost * weightMultiplier * priorityMultiplier * fragileMultiplier;
+  return &#39;\$${totalCost.toStringAsFixed(2)}&#39;;
+}</code></pre>
+</div>
+</td>
+</tr>
+<tr class="cmi-legacy">
+<td>
+processComplexBusinessLogic
+<span class="code-toggle" onclick="toggleCode(8)">
+View Code</span>
+</td>
+<td>200</td>
+<td>23</td>
+<td><span class="metric-badge high-complexity">HIGH</span> 52</td>
+<td>1</td>
+<td>18</td>
+<td>0</td>
+<td><strong>0.0</strong></td>
+</tr>
+<tr id="code-8" class="code-row">
+<td colspan="8">
+<div class="code-container">
+<pre><code>Map&lt;String, dynamic&gt; processComplexBusinessLogic(
+      List&lt;Map&lt;String, dynamic&gt;&gt; inputData,
+      Map&lt;String, String&gt; config,
+      bool enableLogging,
+      String outputFormat
+      ) {
+    Map&lt;String, dynamic&gt; finalResult = {};
+    List&lt;String&gt; errors = [];
+    List&lt;String&gt; warnings = [];
+    int successCount = 0;
+    int errorCount = 0;
+
+    try {
+      if (inputData != null &amp;&amp; inputData.isNotEmpty) {
+        for (int i = 0; i &lt; inputData.length; i++) {
+          Map&lt;String, dynamic&gt; item = inputData[i];
+
+          if (item != null &amp;&amp; item.isNotEmpty) {
+            try {
+              if (item.containsKey(&#39;type&#39;) &amp;&amp; item[&#39;type&#39;] != null) {
+                String type = item[&#39;type&#39;].toString().toLowerCase();
+
+                if (type == &#39;user&#39;) {
+                  if (item.containsKey(&#39;data&#39;) &amp;&amp; item[&#39;data&#39;] is Map) {
+                    Map&lt;String, dynamic&gt; userData = item[&#39;data&#39;];
+
+                    if (userData.containsKey(&#39;id&#39;) &amp;&amp; userData[&#39;id&#39;] != null) {
+                      try {
+                        int userId = int.parse(userData[&#39;id&#39;].toString());
+
+                        if (userId &gt; 0) {
+                          if (userData.containsKey(&#39;profile&#39;)) {
+                            Map&lt;String, dynamic&gt; profile = userData[&#39;profile&#39;];
+
+                            if (profile != null &amp;&amp; profile.isNotEmpty) {
+                              if (profile.containsKey(&#39;name&#39;) &amp;&amp; profile[&#39;name&#39;] != null) {
+                                String name = profile[&#39;name&#39;].toString().trim();
+
+                                if (name.isNotEmpty &amp;&amp; name.length &gt;= 2) {
+                                  if (profile.containsKey(&#39;email&#39;)) {
+                                    String email = profile[&#39;email&#39;].toString().toLowerCase();
+
+                                    if (email.contains(&#39;@&#39;) &amp;&amp; email.contains(&#39;.&#39;) &amp;&amp;
+                                        email.length &gt; 5 &amp;&amp; email.length &lt; 100) {
+
+                                      if (profile.containsKey(&#39;settings&#39;)) {
+                                        Map&lt;String, dynamic&gt; settings = profile[&#39;settings&#39;];
+
+                                        if (settings != null) {
+                                          bool isActive = settings[&#39;active&#39;] == true;
+                                          bool hasPermissions = settings[&#39;permissions&#39;] != null;
+                                          String role = settings[&#39;role&#39;]?.toString() ?? &#39;user&#39;;
+
+                                          if (isActive &amp;&amp; hasPermissions) {
+                                            if (role == &#39;admin&#39; || role == &#39;moderator&#39; || role == &#39;user&#39;) {
+                                              Map&lt;String, dynamic&gt; processedUser = {
+                                                &#39;id&#39;: userId,
+                                                &#39;name&#39;: name,
+                                                &#39;email&#39;: email,
+                                                &#39;role&#39;: role,
+                                                &#39;active&#39;: isActive,
+                                                &#39;processed_at&#39;: DateTime.now().toIso8601String(),
+                                              };
+
+                                              if (config.containsKey(&#39;include_metadata&#39;) &amp;&amp;
+                                                  config[&#39;include_metadata&#39;] == &#39;true&#39;) {
+
+                                                if (profile.containsKey(&#39;metadata&#39;)) {
+                                                  processedUser[&#39;metadata&#39;] = profile[&#39;metadata&#39;];
+                                                }
+
+                                                if (settings.containsKey(&#39;preferences&#39;)) {
+                                                  processedUser[&#39;preferences&#39;] = settings[&#39;preferences&#39;];
+                                                }
+                                              }
+
+                                              if (!finalResult.containsKey(&#39;users&#39;)) {
+                                                finalResult[&#39;users&#39;] = [];
+                                              }
+
+                                              finalResult[&#39;users&#39;].add(processedUser);
+                                              successCount++;
+
+                                              if (enableLogging) {
+                                                print(&#39;Successfully processed user: $name&#39;);
+                                              }
+                                            } else {
+                                              errors.add(&#39;Invalid role for user $userId: $role&#39;);
+                                              errorCount++;
+                                            }
+                                          } else {
+                                            if (!isActive) {
+                                              warnings.add(&#39;User $userId is inactive&#39;);
+                                            }
+                                            if (!hasPermissions) {
+                                              errors.add(&#39;User $userId has no permissions&#39;);
+                                              errorCount++;
+                                            }
+                                          }
+                                        } else {
+                                          errors.add(&#39;User $userId has null settings&#39;);
+                                          errorCount++;
+                                        }
+                                      } else {
+                                        errors.add(&#39;User $userId missing settings&#39;);
+                                        errorCount++;
+                                      }
+                                    } else {
+                                      errors.add(&#39;Invalid email format for user $userId&#39;);
+                                      errorCount++;
+                                    }
+                                  } else {
+                                    errors.add(&#39;User $userId missing email&#39;);
+                                    errorCount++;
+                                  }
+                                } else {
+                                  errors.add(&#39;Invalid name for user $userId&#39;);
+                                  errorCount++;
+                                }
+                              } else {
+                                errors.add(&#39;User $userId missing name&#39;);
+                                errorCount++;
+                              }
+                            } else {
+                              errors.add(&#39;User $userId has empty profile&#39;);
+                              errorCount++;
+                            }
+                          } else {
+                            errors.add(&#39;User $userId missing profile&#39;);
+                            errorCount++;
+                          }
+                        } else {
+                          errors.add(&#39;Invalid user ID: $userId&#39;);
+                          errorCount++;
+                        }
+                      } catch (e) {
+                        errors.add(&#39;Error parsing user ID: ${e.toString()}&#39;);
+                        errorCount++;
+                      }
+                    } else {
+                      errors.add(&#39;Item $i missing user ID&#39;);
+                      errorCount++;
+                    }
+                  } else {
+                    errors.add(&#39;Item $i missing or invalid user data&#39;);
+                    errorCount++;
+                  }
+                } else if (type == &#39;system&#39;) {
+                  &#47;&#47; Additional complex logic for system type
+                  warnings.add(&#39;System type processing not fully implemented&#39;);
+                } else {
+                  errors.add(&#39;Unknown type: $type for item $i&#39;);
+                  errorCount++;
+                }
+              } else {
+                errors.add(&#39;Item $i missing type field&#39;);
+                errorCount++;
+              }
+            } catch (e) {
+              errors.add(&#39;Error processing item $i: ${e.toString()}&#39;);
+              errorCount++;
+            }
+          } else {
+            errors.add(&#39;Item $i is null or empty&#39;);
+            errorCount++;
+          }
+        }
+      } else {
+        errors.add(&#39;Input data is null or empty&#39;);
+        errorCount++;
+      }
+
+      finalResult[&#39;summary&#39;] = {
+        &#39;total_processed&#39;: inputData?.length ?? 0,
+        &#39;success_count&#39;: successCount,
+        &#39;error_count&#39;: errorCount,
+        &#39;warnings_count&#39;: warnings.length,
+      };
+
+      if (errors.isNotEmpty) {
+        finalResult[&#39;errors&#39;] = errors;
+      }
+
+      if (warnings.isNotEmpty) {
+        finalResult[&#39;warnings&#39;] = warnings;
+      }
+
+      if (enableLogging) {
+        print(&#39;Processing completed: $successCount successful, $errorCount errors&#39;);
+      }
+
+    } catch (e) {
+      finalResult[&#39;fatal_error&#39;] = e.toString();
+      if (enableLogging) {
+        print(&#39;Fatal error during processing: ${e.toString()}&#39;);
+      }
+    }
+
+    return finalResult;
+  }</code></pre>
+</div>
+</td>
+</tr>
+</table>
+    <script>
+        function toggleCode(id) {
+            const row = document.getElementById('code-' + id);
+            if (row) {
+                const isVisible = row.style.display === 'table-row';
+                row.style.display = isVisible ? 'none' : 'table-row';
+                
+                // Update button text
+                const toggleBtn = document.querySelector(`[onclick="toggleCode(${id})"]`);
+                if (toggleBtn) {
+                    toggleBtn.textContent = isVisible ? 'View Code' : 'Hide Code';
+                }
+            }
+        }
+        
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                // Hide all open code snippets
+                document.querySelectorAll('.code-row').forEach(row => {
+                    row.style.display = 'none';
+                });
+                document.querySelectorAll('.code-toggle').forEach(btn => {
+                    btn.textContent = 'View Code';
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+    

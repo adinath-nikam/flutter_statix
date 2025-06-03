@@ -1,97 +1,161 @@
 library flutter_statix;
 
 import 'dart:io';
+import 'dart_metrics/dart_metrics.dart' as dart_metrics;
+import 'dart_analysis/dart_analyzer.dart' as dart_analyzer;
 
 Future<void> main(List<String> args) async {
-  // Step 1: Create flutter_statix directory if it doesn't exist
-  final statixDir = Directory('flutter_statix');
-  if (!await statixDir.exists()) {
-    print('Creating flutter_statix directory...');
-    await statixDir.create();
-  }
-
-  // Step 2: Run dart analyze and save output
-  print('Running dart analyze...');
-  final analysisFile = File('flutter_statix/dart_analysis.txt');
-  final analyzeResult = await Process.run('dart', ['analyze']);
-  await analysisFile.writeAsString(analyzeResult.stdout);
-
-  // Step 3: Run dart_parser.dart
-  print('Running dart_parser.dart...');
-  final parserResult = await Process.start(
-    'dart',
-    [
-      'run',
-      'flutter_statix:dart_parser',
-      'dart_analysis.txt',
-      'dart_analysis_report.json'
-    ],
-  );
-  await stdout.addStream(parserResult.stdout);
-  await stderr.addStream(parserResult.stderr);
-  final parserExitCode = await parserResult.exitCode;
-  if (parserExitCode != 0) {
-    print('dart_parser.dart failed with exit code $parserExitCode');
-    exit(parserExitCode);
-  }
-
-  // Step 4: Run generate_html_report.dart
-  print('Generating HTML report...');
-  final reportResult = await Process.start(
-    'dart',
-    ['run', 'flutter_statix:generate_html_report'],
-  );
-  await stdout.addStream(reportResult.stdout);
-  await stderr.addStream(reportResult.stderr);
-  final reportExitCode = await reportResult.exitCode;
-  if (reportExitCode != 0) {
-    print('generate_html_report.dart failed with exit code $reportExitCode');
-    exit(reportExitCode);
-  }
-
-  // Step 5: Run flutter test --coverage
-  // Run flutter test with custom coverage path
-  print('Running flutter test...');
-
-  // Run flutter test with coverage — output is written to coverage/lcov.info
-  final testResult = await Process.start(
-    'flutter',
-    ['test', '--coverage'],
-  );
-  await stdout.addStream(testResult.stdout);
-  await stderr.addStream(testResult.stderr);
-  final testExitCode = await testResult.exitCode;
-
-  if (testExitCode != 0) {
-    print('Tests failed with exit code $testExitCode');
-    exit(testExitCode);
-  }
-
-  // Copy lcov.info to flutter_statix/coverage/
-  final originalLcov = File('coverage/lcov.info');
-  final customLcov = File('flutter_statix/coverage/lcov.info');
-
-  if (!await originalLcov.exists()) {
-    print('❌ coverage/lcov.info not found. Something went wrong.');
+  try {
+    await _runFlutterStatix();
+  } catch (e, stackTrace) {
+    print('💥 Fatal error: $e');
+    print('Stack trace: $stackTrace');
     exit(1);
   }
+}
 
-  // Ensure directory exists
-  await customLcov.parent.create(recursive: true);
-  await originalLcov.copy(customLcov.path);
+Future<void> _runFlutterStatix() async {
+  // Step 1: Create flutter_statix directory if it doesn't exist
+  final statixDir = Directory('flutter_statix');
+  await _ensureDirectoryExists(statixDir, '📁 Creating flutter_statix directory...');
 
-  // Generate HTML report
-  print('Generating HTML report...');
+  // Step 2: Run `dart analyze` and save output
+  dart_analyzer.main();
+
+  // Step 6: Copy coverage file to flutter_statix/coverage/
+  // await _copyCoverageFile();
+
+  // Step 7: Generate HTML coverage report using genhtml
+  // await _generateHtmlCoverageReport();
+
+  dart_metrics.main();
+
+  print('🎉 Flutter Statix analysis completed successfully!');
+}
+
+Future<void> _ensureDirectoryExists(Directory dir, String message) async {
+  if (!await dir.exists()) {
+    print(message);
+    await dir.create(recursive: true);
+  }
+}
+
+
+Future<void> _runFlutterTests() async {
+  // Check if Flutter is available
+  final flutterCheckResult = await Process.run('flutter', ['--version']);
+  if (flutterCheckResult.exitCode != 0) {
+    throw StateError('Flutter is not available or not in PATH');
+  }
+
+  final exitCode = await _runProcessWithStreaming(
+    'flutter',
+    ['test', '--coverage'],
+    'flutter test',
+  );
+
+  if (exitCode != 0) {
+    throw ProcessException('Flutter tests failed', exitCode);
+  }
+}
+
+Future<void> _copyCoverageFile() async {
+  final originalLcov = File('coverage/lcov.info');
+  final targetLcov = File('flutter_statix/coverage/lcov.info');
+
+  if (!await originalLcov.exists()) {
+    throw StateError('coverage/lcov.info not found. Tests may not have generated coverage data.');
+  }
+
+  final lcovContent = await originalLcov.readAsString();
+  if (lcovContent.trim().isEmpty) {
+    print('⚠️ lcov.info is empty. No coverage data available.');
+    return;
+  }
+
+  await targetLcov.parent.create(recursive: true);
+  await originalLcov.copy(targetLcov.path);
+  print('📋 Coverage data copied to ${targetLcov.path}');
+}
+
+Future<void> _generateHtmlCoverageReport() async {
+  final targetLcov = File('flutter_statix/coverage/lcov.info');
+
+  if (!await targetLcov.exists() || (await targetLcov.readAsString()).trim().isEmpty) {
+    print('⚠️ Skipping HTML coverage generation - no coverage data available');
+    return;
+  }
+
+  // Check if genhtml is available
+  final genhtmlCheckResult = await Process.run('which', ['genhtml']);
+  if (genhtmlCheckResult.exitCode != 0) {
+    print('⚠️ genhtml not found. Install lcov package to generate HTML coverage reports.');
+    print('   Ubuntu/Debian: sudo apt-get install lcov');
+    print('   macOS: brew install lcov');
+    return;
+  }
+
+  print('📊 Generating HTML coverage report...');
+  final outputDir = 'flutter_statix/coverage/html';
+
   final genhtmlResult = await Process.run(
     'genhtml',
-    [customLcov.path, '-o', 'flutter_statix/coverage/html'],
+    [
+      targetLcov.path,
+      '-o', outputDir,
+      '--show-details',
+      '--highlight',
+      '--legend',
+    ],
   );
 
   if (genhtmlResult.exitCode == 0) {
-    print('✅ HTML report generated at: flutter_statix/coverage/html/index.html');
+    print('✅ Coverage report available at: $outputDir/index.html');
+
+    // Try to get coverage summary
+    final indexFile = File('$outputDir/index.html');
+    if (await indexFile.exists()) {
+      print('🔍 Open the report in your browser to view detailed coverage metrics');
+    }
   } else {
-    print('❌ genhtml failed:\n${genhtmlResult.stderr}');
-    exit(genhtmlResult.exitCode);
+    print('❌ genhtml failed with exit code ${genhtmlResult.exitCode}');
+    if (genhtmlResult.stderr.toString().isNotEmpty) {
+      print('Error details: ${genhtmlResult.stderr}');
+    }
+    throw ProcessException('genhtml failed', genhtmlResult.exitCode);
+  }
+}
+
+Future<int> _runProcessWithStreaming(
+    String executable,
+    List<String> arguments,
+    String processName,
+    ) async {
+  final process = await Process.start(executable, arguments);
+
+  // Stream output in real-time
+  final stdoutFuture = stdout.addStream(process.stdout);
+  final stderrFuture = stderr.addStream(process.stderr);
+
+  // Wait for both streams and the process to complete
+  await Future.wait([stdoutFuture, stderrFuture]);
+  final exitCode = await process.exitCode;
+
+  if (exitCode == 0) {
+    print('✅ $processName completed successfully');
+  } else {
+    print('❌ $processName failed with exit code $exitCode');
   }
 
+  return exitCode;
+}
+
+class ProcessException implements Exception {
+  final String message;
+  final int exitCode;
+
+  ProcessException(this.message, this.exitCode);
+
+  @override
+  String toString() => '$message (exit code: $exitCode)';
 }
