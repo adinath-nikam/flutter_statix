@@ -3,6 +3,7 @@ library flutter_statix;
 import 'dart:io';
 import 'dart_metrics/dart_metrics.dart' as dart_metrics;
 import 'dart_analysis/dart_analyzer.dart' as dart_analyzer;
+import 'send_email/send_email.dart' as send_email;
 
 Future<void> main(List<String> args) async {
   try {
@@ -29,6 +30,8 @@ Future<void> _runFlutterStatix() async {
   // await _generateHtmlCoverageReport();
 
   dart_metrics.main();
+
+  send_email.main();
 
   print('🎉 Flutter Statix analysis completed successfully!');
 }
