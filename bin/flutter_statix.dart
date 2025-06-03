@@ -4,6 +4,8 @@ import 'dart:io';
 import 'dart_metrics/dart_metrics.dart' as dart_metrics;
 import 'dart_analysis/dart_analyzer.dart' as dart_analyzer;
 import 'send_email/send_email.dart' as send_email;
+import 'unit_test_code_coverage/flutter_unit_test_coverage.dart' as flutter_unit_test_coverage;
+import 'utility/archiver.dart' as archiver;
 
 Future<void> main(List<String> args) async {
   try {
@@ -30,6 +32,10 @@ Future<void> _runFlutterStatix() async {
   // await _generateHtmlCoverageReport();
 
   await dart_metrics.main();
+
+  await flutter_unit_test_coverage.main();
+
+  await archiver.main();
 
   await send_email.main();
 
