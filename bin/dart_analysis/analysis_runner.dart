@@ -12,7 +12,7 @@ class AnalysisRunner {
 
   AnalysisRunner(this.config) {
     _dartAnalyzer = DartAnalyzer(config);
-    _dartParser = DartParser(config);
+    _dartParser = DartParser();
     _htmlGenerator = HtmlReportGenerator(config);
   }
 

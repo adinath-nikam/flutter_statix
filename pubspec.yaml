@@ -18,9 +18,9 @@ dev_dependencies:
   test: ^1.24.0
 
 executables:
-  flutter_statix: flutter_statix.dart
+  flutter_statix: flutter_statix
 #  dart_parser: dart_parser.dart
 #  generate_html: generate_html_report.dart
-  dart_metrics: dart_metrics/dart_metrics.dart
-  dart_analysis: dart_analysis/dart_analyzer.dart
-  send_mail: send_mail/send_email.dart
+#  dart_metrics: dart_metrics.dart
+#  dart_analysis: dart_analyzer.dart
+#  send_mail: send_email.dart

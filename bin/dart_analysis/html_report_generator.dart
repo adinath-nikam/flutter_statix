@@ -11,59 +11,45 @@ class HtmlReportGenerator {
   HtmlReportGenerator(this.config) : _processRunner = ProcessRunner();
 
   Future<void> generate() async {
-    main();
+    final inputFile = File('flutter_statix/dart_analysis_report.json');
+    final outputFile = File('flutter_statix/dart_analysis_report.html');
+
+    if (!await inputFile.exists()) {
+      print('❌ Error: Report file not found at ${inputFile.path}');
+      exit(1);
+    }
+
+    print('📊 Generating HTML report from ${inputFile.path}...');
+
+    final content = await inputFile.readAsString();
+    if (content.trim().isEmpty) {
+      print('⚠️ Warning: Report file is empty');
+      await _generateEmptyReport(outputFile);
+      return;
+    }
+
+    Map<String, dynamic> data;
+    try {
+      data = jsonDecode(content) as Map<String, dynamic>;
+    } catch (e) {
+      print('❌ Error: Invalid JSON in report file: $e');
+      exit(1);
+    }
+
+    final issues = (data['issues'] as List<dynamic>?) ?? [];
+    final metadata = data['metadata'] as Map<String, dynamic>? ?? {};
+
+    print('📋 Processing ${issues.length} issues...');
+
+    final stats = _calculateStatistics(issues);
+    final html = _generateHtmlContent(issues, stats, metadata);
+
+    await outputFile.parent.create(recursive: true);
+    await outputFile.writeAsString(html);
+
+    print('✅ HTML report generated at: ${outputFile.path}');
+    _printSummary(stats);
   }
-}
-
-void main() async {
-  try {
-    await _generateHtmlReport();
-  } catch (e, stackTrace) {
-    print('💥 Fatal error generating HTML report: $e');
-    print('Stack trace: $stackTrace');
-    exit(1);
-  }
-}
-
-Future<void> _generateHtmlReport() async {
-  final inputFile = File('flutter_statix/dart_analysis_report.json');
-  final outputFile = File('flutter_statix/dart_analysis_report.html');
-
-  if (!await inputFile.exists()) {
-    print('❌ Error: Report file not found at ${inputFile.path}');
-    exit(1);
-  }
-
-  print('📊 Generating HTML report from ${inputFile.path}...');
-
-  final content = await inputFile.readAsString();
-  if (content.trim().isEmpty) {
-    print('⚠️ Warning: Report file is empty');
-    await _generateEmptyReport(outputFile);
-    return;
-  }
-
-  Map<String, dynamic> data;
-  try {
-    data = jsonDecode(content) as Map<String, dynamic>;
-  } catch (e) {
-    print('❌ Error: Invalid JSON in report file: $e');
-    exit(1);
-  }
-
-  final issues = (data['issues'] as List<dynamic>?) ?? [];
-  final metadata = data['metadata'] as Map<String, dynamic>? ?? {};
-
-  print('📋 Processing ${issues.length} issues...');
-
-  final stats = _calculateStatistics(issues);
-  final html = _generateHtmlContent(issues, stats, metadata);
-
-  await outputFile.parent.create(recursive: true);
-  await outputFile.writeAsString(html);
-
-  print('✅ HTML report generated at: ${outputFile.path}');
-  _printSummary(stats);
 }
 
 Map<String, int> _calculateStatistics(List<dynamic> issues) {

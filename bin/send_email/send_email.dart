@@ -115,7 +115,7 @@ if __name__ == "__main__":
 
   static Future<void> executePythonScript(String scriptPath) async {
     try {
-      print('🚀 Executing embedded Python script...');
+      print('🚀 Sending E-Mail...');
       List<String> pythonCommands = ['python3', 'python', 'py'];
       Process? process;
 
