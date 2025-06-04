@@ -1,3 +1,4 @@
+import 'maintainability_calculator.dart';
 /// Represents the complexity metrics for a single function or method
 class FunctionComplexity {
   final String name;
@@ -9,6 +10,7 @@ class FunctionComplexity {
   final int switchCaseCount;
   final double maintainabilityIndex;
   final String? codeSnippet;
+  final HalsteadMetrics halsteadMetrics;
 
   const FunctionComplexity({
     required this.name,
@@ -19,6 +21,7 @@ class FunctionComplexity {
     required this.booleanExprCount,
     required this.switchCaseCount,
     required this.maintainabilityIndex,
+    required this.halsteadMetrics,
     this.codeSnippet,
   });
 

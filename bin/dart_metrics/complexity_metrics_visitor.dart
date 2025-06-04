@@ -44,14 +44,16 @@ class ComplexityMetricsVisitor extends RecursiveAstVisitor<void> {
       body.accept(analyzer);
 
       final lineCount = _calculateLineCount(declaration);
-      final codeSnippet = _extractCodeSnippet(declaration);
+      final codeSnippet = _extractCodeSnippet(declaration) ?? '';
 
+      // Analyze Halstead metrics from the code snippet
+      final halsteadMetrics = MaintainabilityCalculator.analyzeCode(codeSnippet);
+
+      // Compute Maintainability Index using updated calculator
       final maintainabilityIndex = MaintainabilityCalculator.calculate(
         linesOfCode: lineCount,
         cyclomaticComplexity: analyzer.complexity,
-        nestingLevel: analyzer.maxNesting,
-        returnCount: analyzer.returnCount,
-        booleanExpressions: analyzer.booleanExprCount,
+        halsteadMetrics: halsteadMetrics,
       );
 
       metrics.add(FunctionComplexity(
@@ -63,12 +65,14 @@ class ComplexityMetricsVisitor extends RecursiveAstVisitor<void> {
         booleanExprCount: analyzer.booleanExprCount,
         switchCaseCount: analyzer.switchCaseCount,
         maintainabilityIndex: maintainabilityIndex,
+        halsteadMetrics: halsteadMetrics,
         codeSnippet: codeSnippet,
       ));
     } catch (e) {
       print('⚠️  Error analyzing function $name in $_filePath: $e');
     }
   }
+
 
   int _calculateLineCount(AstNode node) {
     final startLine = _getLineNumber(node.offset);

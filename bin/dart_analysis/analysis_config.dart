@@ -1,11 +1,13 @@
 class AnalysisConfig {
-  final String analysisOutputFile;
-  final String dartAnalysisReport;
-  final String outputDirectory;
+  final String dartAnalysisOutputTextFile;
+  final String dartAnalysisParsedJsonFile;
+  final String dartAnalysisOutputDirectory;
+  final String dartAnalysisReportFile;
 
   const AnalysisConfig({
-    this.analysisOutputFile = 'flutter_statix/dart_analysis.txt',
-    this.dartAnalysisReport = 'flutter_statix/dart_analysis_report.json',
-    this.outputDirectory = 'flutter_statix',
+    this.dartAnalysisOutputTextFile = 'flutter_statix/dart_analysis.txt',
+    this.dartAnalysisParsedJsonFile = 'flutter_statix/dart_analysis_report.json',
+    this.dartAnalysisReportFile = 'flutter_statix/dart_analysis_report.html',
+    this.dartAnalysisOutputDirectory = 'flutter_statix',
   });
 }

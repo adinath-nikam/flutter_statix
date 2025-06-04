@@ -6,13 +6,14 @@ import 'maintainability_calculator.dart';
 
 /// Generates HTML reports for code metrics analysis
 class HtmlReportGenerator {
-  static const String _outputFileName = 'flutter_statix/dart_metrics_report.html';
+  static const String _outputFileName =
+      'flutter_statix/dart_metrics_report.html';
 
   /// Generates and writes the HTML report
   static Future<void> generateReport(
-      List<FileSystemEntity> files,
-      Map<FileSystemEntity, List<FunctionComplexity>> fileMetrics,
-      ) async {
+    List<FileSystemEntity> files,
+    Map<FileSystemEntity, List<FunctionComplexity>> fileMetrics,
+  ) async {
     final buffer = StringBuffer();
     _writeHtmlHeader(buffer);
 
@@ -31,8 +32,7 @@ class HtmlReportGenerator {
     _writeHtmlFooter(buffer);
     await _writeReport(buffer.toString());
 
-    print('✅ HTML report generated: $_outputFileName');
-    print('📈 Total functions analyzed: $totalFunctions');
+    print('✅ Dart Metrics HTML Report Generated: $_outputFileName');
   }
 
   static void _writeHtmlHeader(StringBuffer buffer) {
@@ -131,6 +131,35 @@ class HtmlReportGenerator {
         .cmi-poor { background-color: var(--color-poor); }
         .cmi-legacy { background-color: var(--color-legacy); }
         
+        .metric-badge {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 12px;
+  color: #fff;
+}
+
+.excellent-mi {
+  background-color: #28a745; /* green */
+}
+
+.good-mi {
+  background-color: #5cb85c; /* light green */
+}
+
+.moderate-mi {
+  background-color: #f0ad4e; /* amber */
+}
+
+.poor-mi {
+  background-color: #d9534f; /* red */
+}
+
+.legacy-mi {
+  background-color: #6c757d; /* gray */
+}
+
+        
         .code-toggle {
             cursor: pointer;
             color: #007bff;
@@ -178,9 +207,11 @@ class HtmlReportGenerator {
             font-weight: bold;
         }
         
-        .high-complexity { background-color: #dc3545; color: white; }
-        .medium-complexity { background-color: #ffc107; color: black; }
-        .low-complexity { background-color: #28a745; color: white; }
+        .mi-excellent { background-color: #88ba8b; color: black; }
+        .mi-good { background-color: #dbecda; color: black; }
+        .mi-moderate { background-color: #f2d883; color: black; }
+        .mi-poor { background-color: #db8481; color: black; }
+        .mi-legacy { background-color: #6c757d; color: white; }
         
         @media (max-width: 768px) {
             body { padding: 10px; }
@@ -207,11 +238,11 @@ class HtmlReportGenerator {
   }
 
   static void _writeFileSection(
-      StringBuffer buffer,
-      FileSystemEntity file,
-      List<FunctionComplexity> metrics,
-      int startIndex,
-      ) {
+    StringBuffer buffer,
+    FileSystemEntity file,
+    List<FunctionComplexity> metrics,
+    int startIndex,
+  ) {
     final relativePath = path.relative(file.path);
     final fileStats = _calculateFileStats(metrics);
 
@@ -239,14 +270,16 @@ class HtmlReportGenerator {
 
     for (int i = 0; i < metrics.length; i++) {
       final metric = metrics[i];
-      final cmiClass = MaintainabilityCalculator.getCMIClass(metric.maintainabilityIndex);
-      final complexityBadge = _getComplexityBadge(metric.complexity);
+      final cmiClass =
+          MaintainabilityCalculator.getMIClass(metric.maintainabilityIndex);
+      final complexityBadge = getMIBadge(metric.maintainabilityIndex);
       final globalIndex = startIndex + i;
 
       buffer.writeln('<tr class="$cmiClass">');
       buffer.writeln('<td>');
       buffer.writeln('${metric.name}');
-      buffer.writeln('<span class="code-toggle" onclick="toggleCode($globalIndex)">');
+      buffer.writeln(
+          '<span class="code-toggle" onclick="toggleCode($globalIndex)">');
       buffer.writeln('View Code</span>');
       buffer.writeln('</td>');
       buffer.writeln('<td>${metric.lineCount}</td>');
@@ -255,18 +288,60 @@ class HtmlReportGenerator {
       buffer.writeln('<td>${metric.returnCount}</td>');
       buffer.writeln('<td>${metric.booleanExprCount}</td>');
       buffer.writeln('<td>${metric.switchCaseCount}</td>');
-      buffer.writeln('<td><strong>${metric.maintainabilityIndex.toStringAsFixed(1)}</strong></td>');
+      buffer.writeln(
+          '<td><strong>${metric.maintainabilityIndex.toStringAsFixed(1)}</strong></td>');
       buffer.writeln('</tr>');
 
       // Code snippet row
       final snippet = metric.codeSnippet ?? 'Code snippet not available';
       final escapedSnippet = htmlEscape.convert(snippet);
 
+// Get detailed analysis
+      final details = MaintainabilityCalculator.getDetailedAnalysis(
+          linesOfCode: metric.lineCount,
+          cyclomaticComplexity: metric.complexity,
+          halsteadMetrics: metrics[i].halsteadMetrics);
+
+// Extract analysis data
+      final category = details['category'];
+      final color = details['color'];
+      final recommendations =
+          (details['recommendations'] as List).map((r) => '<li>$r</li>').join();
+      final halstead = details['halsteadMetrics'] as Map<String, dynamic>;
+
+// Code snippet and details row
       buffer.writeln('<tr id="code-$globalIndex" class="code-row">');
       buffer.writeln('<td colspan="8">');
       buffer.writeln('<div class="code-container">');
       buffer.writeln('<pre><code>$escapedSnippet</code></pre>');
       buffer.writeln('</div>');
+
+// Maintainability breakdown
+      buffer.writeln(
+          '<div style="margin-top: 10px; padding: 10px; border-left: 4px solid $color; background-color: #f1f1f1;">');
+      buffer.writeln(
+          '<strong>Maintainability: </strong><span style="color: $color;">$category</span><br><br>');
+
+      buffer.writeln('<strong>Halstead Metrics:</strong><ul>');
+      buffer
+          .writeln('<li>Volume: ${halstead['volume'].toStringAsFixed(2)}</li>');
+      buffer.writeln(
+          '<li>Difficulty: ${halstead['difficulty'].toStringAsFixed(2)}</li>');
+      buffer
+          .writeln('<li>Effort: ${halstead['effort'].toStringAsFixed(2)}</li>');
+      buffer.writeln(
+          '<li>Time to Program: ${halstead['timeToProgram'].toStringAsFixed(2)} sec</li>');
+      buffer.writeln(
+          '<li>Delivered Bugs: ${halstead['deliveredBugs'].toStringAsFixed(2)}</li>');
+      buffer.writeln('</ul>');
+
+      if (recommendations.isNotEmpty) {
+        buffer.writeln(
+            '<strong>Recommendations:</strong><ul>$recommendations</ul>');
+      }
+
+      buffer.writeln('</div>'); // end of analysis panel
+
       buffer.writeln('</td>');
       buffer.writeln('</tr>');
     }
@@ -274,10 +349,12 @@ class HtmlReportGenerator {
     buffer.writeln('</table>');
   }
 
-  static Map<String, dynamic> _calculateFileStats(List<FunctionComplexity> metrics) {
+  static Map<String, dynamic> _calculateFileStats(
+      List<FunctionComplexity> metrics) {
     if (metrics.isEmpty) return {'avgCMI': 0.0, 'totalLines': 0};
 
-    final totalCMI = metrics.map((m) => m.maintainabilityIndex).reduce((a, b) => a + b);
+    final totalCMI =
+        metrics.map((m) => m.maintainabilityIndex).reduce((a, b) => a + b);
     final totalLines = metrics.map((m) => m.lineCount).reduce((a, b) => a + b);
 
     return {
@@ -286,10 +363,18 @@ class HtmlReportGenerator {
     };
   }
 
-  static String _getComplexityBadge(int complexity) {
-    if (complexity >= 10) return '<span class="metric-badge high-complexity">HIGH</span>';
-    if (complexity >= 6) return '<span class="metric-badge medium-complexity">MED</span>';
-    return '<span class="metric-badge low-complexity">LOW</span>';
+  static String getMIBadge(double mi) {
+    if (mi >= MaintainabilityCalculator.excellentThreshold) {
+      return '<span class="metric-badge excellent-mi">EXCELLENT</span>';
+    } else if (mi >= MaintainabilityCalculator.goodThreshold) {
+      return '<span class="metric-badge good-mi">GOOD</span>';
+    } else if (mi >= MaintainabilityCalculator.moderateThreshold) {
+      return '<span class="metric-badge moderate-mi">MODERATE</span>';
+    } else if (mi >= MaintainabilityCalculator.poorThreshold) {
+      return '<span class="metric-badge poor-mi">POOR</span>';
+    } else {
+      return '<span class="metric-badge legacy-mi">LEGACY</span>';
+    }
   }
 
   static void _writeHtmlFooter(StringBuffer buffer) {

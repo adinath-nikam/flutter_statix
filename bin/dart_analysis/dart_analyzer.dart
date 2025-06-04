@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'analysis_config.dart';
 import 'process_runner.dart';
-import 'process_exception.dart';
 import 'analysis_runner.dart';
 
 Future<void> main() async {
@@ -10,7 +9,7 @@ Future<void> main() async {
     final runner = AnalysisRunner(config);
     await runner.runFullAnalysis();
   } catch (e) {
-    print('❌ Error generating report: $e');
+    print('❌ Error Generating Dart Analysis Report: $e');
     exit(1);
   }
 }
@@ -22,9 +21,9 @@ class DartAnalyzer {
   DartAnalyzer(this.config) : _processRunner = ProcessRunner();
 
   Future<void> analyze() async {
-    final outputFile = File(config.analysisOutputFile);
+    print('🔍 Running Dart Analysis...');
+    final outputFile = File(config.dartAnalysisOutputTextFile);
     final result = await _processRunner.run('dart', ['analyze']);
-
     await _saveAnalysisResult(outputFile, result);
     _logAnalysisResult(result, outputFile);
   }
@@ -48,10 +47,10 @@ class DartAnalyzer {
 
   void _logAnalysisResult(ProcessResult result, File outputFile) {
     if (result.exitCode != 0) {
-      print('⚠️ dart analyze completed with exit code ${result.exitCode}');
-      print('Analysis saved to ${outputFile.path}');
+      print('⚠️ Dart Analysis Completed with Exit Code ${result.exitCode}');
+      print('✅ Dart Analysis Saved to ${outputFile.path}');
     } else {
-      print('✅ dart analyze completed successfully');
+      print('✅ Dart Analysis Completed Successfully');
     }
   }
 }

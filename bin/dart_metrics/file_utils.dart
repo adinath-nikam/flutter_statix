@@ -30,7 +30,7 @@ class FileUtils {
     try {
       return await File(file.path).readAsString();
     } catch (e) {
-      print('⚠️  Error reading file ${file.path}: $e');
+      print('⚠️ Error Reading File ${file.path}: $e');
       return null;
     }
   }

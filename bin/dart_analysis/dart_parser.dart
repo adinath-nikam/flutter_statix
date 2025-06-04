@@ -1,14 +1,22 @@
-import 'analysis_config.dart';
-import 'process_runner.dart';
-import 'process_exception.dart';
 import 'dart:convert';
 import 'dart:io';
+import 'analysis_config.dart';
 
 class DartParser {
+  final AnalysisConfig config;
+
+  DartParser(this.config);
 
   Future<void> parse() async {
-    final input = File('flutter_statix/dart_analysis.txt');
-    final output = File('flutter_statix/dart_analysis_report.json');
+    print('🧩 Parsing Dart Analysis Data...');
+    final input = File(config.dartAnalysisOutputTextFile);
+    final output = File(config.dartAnalysisParsedJsonFile);
+
+    // Check if input file exists
+    if (!await input.exists()) {
+      print('❌ flutter_statix/dart_analysis.txt not found.');
+      exit(1);
+    }
 
     // Regex pattern to match analyzer output lines
     final pattern = RegExp(
@@ -23,12 +31,6 @@ class DartParser {
     };
 
     final issues = <Map<String, dynamic>>[];
-
-    // Check if input file exists
-    if (!await input.exists()) {
-      print('❌ flutter_statix/dart_analysis.txt not found.');
-      exit(1);
-    }
 
     // Read and parse each line
     await for (final line in input
@@ -69,6 +71,6 @@ class DartParser {
       const JsonEncoder.withIndent('  ').convert({'issues': issues}),
     );
 
-    print('✅ ${issues.length} issues written to flutter_statix/dart_analysis_report.json');
+    print('✅ Dart Analysis Parsed and written to dart_analysis_report.json');
   }
 }

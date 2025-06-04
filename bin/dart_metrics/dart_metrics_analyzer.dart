@@ -11,18 +11,19 @@ class DartMetricsAnalyzer {
 
   /// Generates a comprehensive metrics report for Dart code
   Future<void> generateReport({String? libPath}) async {
+    print('⚙️ Generating Dart Metrics...');
     final stopwatch = Stopwatch()
       ..start();
     final targetPath = libPath ?? _defaultLibPath;
 
     final dir = Directory(targetPath);
     if (!dir.existsSync()) {
-      throw Exception('Directory $targetPath does not exist');
+      throw Exception('Directory $targetPath Does Not Exist');
     }
 
     final dartFiles = FileUtils.getDartFiles(dir);
     if (dartFiles.isEmpty) {
-      print('⚠️  No Dart files found in $targetPath');
+      print('⚠️ No Dart Files Found in $targetPath');
       return;
     }
 
@@ -42,8 +43,8 @@ class DartMetricsAnalyzer {
     await HtmlReportGenerator.generateReport(dartFiles, fileMetrics);
 
     stopwatch.stop();
-    print('⏱️  Analysis completed in ${stopwatch.elapsedMilliseconds}ms');
-    print('📈 Total functions analyzed: $totalFunctions');
+    print('⏱️ Analysis Completed in ${stopwatch.elapsedMilliseconds}ms');
+    print('📈 Total Functions Analyzed: $totalFunctions');
   }
 
   /// Analyzes a single Dart file and returns complexity metrics
@@ -61,8 +62,7 @@ class DartMetricsAnalyzer {
     try {
       final result = parseString(content: content);
       if (result.errors.isNotEmpty) {
-        print(
-            '⚠️  Parse errors in ${file.path}: ${result.errors.length} errors');
+        print('⚠️ Parse Errors in ${file.path}: ${result.errors.length} errors');
         // Continue processing despite parse errors
       }
 
@@ -70,7 +70,7 @@ class DartMetricsAnalyzer {
       result.unit.accept(visitor);
       return visitor.metrics;
     } catch (e) {
-      print('❌ Failed to parse ${file.path}: $e');
+      print('❌ Failed to Parse ${file.path}: $e');
       return [];
     }
   }
