@@ -19,9 +19,14 @@ class CoverageManager {
   /// Run the complete coverage workflow
   Future<void> runCoverageWorkflow() async {
     try {
-      await _testRunner.runTests();
-      await _fileHandler.copyCoverageFile();
-      await _reportGenerator.generateHtmlReport();
+      final result = await _testRunner.runTests();
+      if(result) {
+        await _fileHandler.copyCoverageFile();
+        await _reportGenerator.generateHtmlReport();
+      } else {
+        print('❌No Tests Found, Report Will not be Generated.');
+      }
+
     } catch (e) {
       print('❌ Coverage workflow failed: $e');
       rethrow;

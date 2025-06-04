@@ -17,7 +17,7 @@ class FlutterTestRunner {
   }
 
   /// Run Flutter tests with coverage
-  Future<void> runTests() async {
+  Future<bool> runTests() async {
     await _validateFlutterAvailability();
 
     final exitCode = await _processExecutor.runWithStreaming(
@@ -27,7 +27,9 @@ class FlutterTestRunner {
     );
 
     if (exitCode != 0) {
-      throw ProcessException('Flutter tests failed', exitCode);
+      return false;
+    } else {
+      return true;
     }
   }
 }
