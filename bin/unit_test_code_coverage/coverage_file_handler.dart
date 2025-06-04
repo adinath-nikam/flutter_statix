@@ -23,7 +23,7 @@ class CoverageFileHandler {
 
   Future<void> _validateSourceFile(File sourceFile) async {
     if (!await sourceFile.exists()) {
-      throw StateError('$_sourcePath not found. Tests may not have generated coverage data.');
+      print('⚠️ $_sourcePath not found. No coverage data available.');
     }
 
     final content = await sourceFile.readAsString();
@@ -38,6 +38,9 @@ class CoverageFileHandler {
   }
 
   Future<void> _performCopy(File sourceFile, File targetFile) async {
+    if (!await sourceFile.exists()) {
+      print('⚠️ $_sourcePath not found. No coverage data available.');
+    }
     await sourceFile.copy(targetFile.path);
     print('📋 Coverage data copied to ${targetFile.path}');
   }

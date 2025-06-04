@@ -20,6 +20,7 @@ class CoverageManager {
   Future<void> runCoverageWorkflow() async {
     try {
       final result = await _testRunner.runTests();
+      print(result.toString());
       if(result) {
         await _fileHandler.copyCoverageFile();
         await _reportGenerator.generateHtmlReport();
