@@ -3,25 +3,25 @@ import 'dart:io';
 import 'process_executor.dart';
 import 'exceptions.dart';
 import 'package:path/path.dart' as path;
+import 'unit_test_config.dart';
 
-/// Generates HTML coverage reports using genhtml
 class HtmlReportGenerator {
+  final UnitTestConfig unitTestConfig;
   final String _lcovPath;
   final String _outputDir;
   final ProcessExecutor _processExecutor;
 
   HtmlReportGenerator({
-    String lcovPath = 'flutter_statix/coverage/lcov.info',
-    String outputDir = 'flutter_statix/coverage/html',
+    required this.unitTestConfig,
     ProcessExecutor? processExecutor,
-  }) : _lcovPath = lcovPath,
-        _outputDir = outputDir,
+  }) : _lcovPath = unitTestConfig.unitTestCoverageFilePath,
+        _outputDir = unitTestConfig.unitTestOutputDirectory,
         _processExecutor = processExecutor ?? ProcessExecutor();
 
   /// Generate HTML coverage report
   Future<void> generateHtmlReport() async {
     if (!await _validateCoverageData()) {
-      print('⚠️ Skipping HTML coverage generation - no coverage data available');
+      print('⚠️ | Skipping HTML Coverage Generation - No Coverage Data Available');
       return;
     }
 
@@ -53,7 +53,7 @@ class HtmlReportGenerator {
   }
 
   Future<void> _generateReport() async {
-    print('📊 Generating HTML coverage report...');
+    print('📊 | Generating HTML coverage report...');
 
     final result = await _processExecutor.run('genhtml', [
       _lcovPath,
@@ -70,16 +70,16 @@ class HtmlReportGenerator {
   }
 
   Future<void> _handleSuccessfulGeneration() async {
-    print('✅ Coverage report available at: $_outputDir/index.html');
+    print('✅ | Coverage Report available at: $_outputDir/index.html');
 
     final indexFile = File(path.join(_outputDir, 'index.html'));
     if (await indexFile.exists()) {
-      print('🔍 Open the report in your browser to view detailed coverage metrics');
+      print('🔍 | Open the report in your browser to view detailed coverage metrics');
     }
   }
 
   Future<void> _handleGenerationFailure(ProcessResult result) async {
-    print('❌ genhtml failed with exit code ${result.exitCode}');
+    print('❌ | genhtml failed with exit code ${result.exitCode}');
     if (result.stderr.toString().isNotEmpty) {
       print('Error details: ${result.stderr}');
     }

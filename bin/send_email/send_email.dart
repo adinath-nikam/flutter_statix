@@ -81,15 +81,15 @@ def send_email_from_config(config_path: str = "email_config.ini") -> bool:
             server.starttls()
             server.login(smtp_user, smtp_pass)
             server.send_message(msg)
-        print("\\n✅ Email sent successfully!")
+        print("\\n✅  | Email sent successfully!")
         return True
     except Exception as e:
-        print(f"❌ Error sending email: {e}")
+        print(f"❌  | Error Sending Email: {e}")
         return False
 
 if __name__ == "__main__":
     config_file = "email_config.ini"
-    print(f"📧 Sending email using configuration: {config_file}")
+    print(f"📧 | Sending Email Using Configuration: {config_file}")
     print("=" * 60)
     send_email_from_config(config_file)
 ''';
@@ -115,7 +115,7 @@ if __name__ == "__main__":
 
   static Future<void> executePythonScript(String scriptPath) async {
     try {
-      print('🚀 Sending E-Mail...');
+      print('🚀 | Sending E-Mail...');
       List<String> pythonCommands = ['python3', 'python', 'py'];
       Process? process;
 
@@ -133,14 +133,15 @@ if __name__ == "__main__":
       process.stdout.transform(utf8.decoder).listen((data) => stdout.write(data));
       process.stderr.transform(utf8.decoder).listen((data) => stderr.write(data));
 
+      // TODO: !@##@!
       final exitCode = await process.exitCode;
-      if (exitCode == 0) {
-        print('\n✅ Python script executed successfully.');
-      } else {
-        print('\n❌ Python script exited with code: $exitCode');
-      }
+      // if (exitCode == 0) {
+      //   print('\n✅  | Notified to all the Registered Recipients');
+      // } else {
+      //   print('\n❌  | Failed to Notify All the Registered Recipients with Error Code: $exitCode');
+      // }
     } catch (e) {
-      print('Error executing Python script: $e');
+      print('❌  | Something went Wrong: $e');
       rethrow;
     }
   }

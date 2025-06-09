@@ -32,7 +32,7 @@ class HtmlReportGenerator {
     _writeHtmlFooter(buffer);
     await _writeReport(buffer.toString());
 
-    print('✅ Dart Metrics HTML Report Generated: $_outputFileName');
+    print('✅  | Dart Metrics HTML Report Generated: $_outputFileName');
   }
 
   static void _writeHtmlHeader(StringBuffer buffer) {

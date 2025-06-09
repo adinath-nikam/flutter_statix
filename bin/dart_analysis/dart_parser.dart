@@ -8,13 +8,13 @@ class DartParser {
   DartParser(this.config);
 
   Future<void> parse() async {
-    print('🧩 Parsing Dart Analysis Data...');
+    print('🧩 | Parsing Dart Analysis Data...');
     final input = File(config.dartAnalysisOutputTextFile);
     final output = File(config.dartAnalysisParsedJsonFile);
 
     // Check if input file exists
     if (!await input.exists()) {
-      print('❌ flutter_statix/dart_analysis.txt not found.');
+      print('❌ | flutter_statix/dart_analysis.txt not found.');
       exit(1);
     }
 
@@ -71,6 +71,6 @@ class DartParser {
       const JsonEncoder.withIndent('  ').convert({'issues': issues}),
     );
 
-    print('✅ Dart Analysis Parsed and written to dart_analysis_report.json');
+    print('✅  | Dart Analysis Parsed and written to dart_analysis_report.json');
   }
 }

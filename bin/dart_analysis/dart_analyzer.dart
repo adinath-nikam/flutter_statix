@@ -21,7 +21,7 @@ class DartAnalyzer {
   DartAnalyzer(this.config) : _processRunner = ProcessRunner();
 
   Future<void> analyze() async {
-    print('🔍 Running Dart Analysis...');
+    print('🔍 | Running Dart Analysis...');
     final outputFile = File(config.dartAnalysisOutputTextFile);
     final result = await _processRunner.run('dart', ['analyze']);
     await _saveAnalysisResult(outputFile, result);
@@ -47,10 +47,10 @@ class DartAnalyzer {
 
   void _logAnalysisResult(ProcessResult result, File outputFile) {
     if (result.exitCode != 0) {
-      print('⚠️ Dart Analysis Completed with Exit Code ${result.exitCode}');
-      print('✅ Dart Analysis Saved to ${outputFile.path}');
+      print('⚠️ | Dart Analysis Completed with Exit Code ${result.exitCode}');
+      print('✅  | Dart Analysis Saved to ${outputFile.path}');
     } else {
-      print('✅ Dart Analysis Completed Successfully');
+      print('✅  | Dart Analysis Completed Successfully');
     }
   }
 }

@@ -8,20 +8,20 @@ class HtmlReportGenerator {
   HtmlReportGenerator(this.config);
 
   Future<void> generate() async {
-    print('📁Generating Analysis Report...');
+    print('📁 | Generating Analysis Report...');
     final inputFile = File(config.dartAnalysisParsedJsonFile);
     final outputFile = File(config.dartAnalysisReportFile);
 
     if (!await inputFile.exists()) {
-      print('❌ Error: Parsed Json File Not Found at ${inputFile.path}');
+      print('❌ | Error: Parsed Json File Not Found at ${inputFile.path}');
       exit(1);
     }
 
-    print('📊 Generating HTML Report from Parsed JSON File ${inputFile.path}...');
+    print('📊 | Generating HTML Report from Parsed JSON File ${inputFile.path}...');
 
     final content = await inputFile.readAsString();
     if (content.trim().isEmpty) {
-      print('⚠️ Warning: Parsed JSON File is Empty');
+      print('⚠️ | Warning: Parsed JSON File is Empty');
       await _generateEmptyReport(outputFile);
       return;
     }
@@ -30,14 +30,14 @@ class HtmlReportGenerator {
     try {
       data = jsonDecode(content) as Map<String, dynamic>;
     } catch (e) {
-      print('❌ Error: Invalid JSON Format in Parsed Report File: $e');
+      print('❌ | Error: Invalid JSON Format in Parsed Report File: $e');
       exit(1);
     }
 
     final issues = (data['issues'] as List<dynamic>?) ?? [];
     final metadata = data['metadata'] as Map<String, dynamic>? ?? {};
 
-    print('📋 Processing ${issues.length} Issues...');
+    print('📋 | Processing ${issues.length} Issues...');
 
     final stats = _calculateStatistics(issues);
     final html = _generateHtmlContent(issues, stats, metadata);
@@ -45,7 +45,7 @@ class HtmlReportGenerator {
     await outputFile.parent.create(recursive: true);
     await outputFile.writeAsString(html);
 
-    print('✅ HTML Report Generated at: ${outputFile.path}');
+    print('✅  | HTML Report Generated at: ${outputFile.path}');
   }
 }
 

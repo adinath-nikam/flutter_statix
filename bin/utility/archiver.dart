@@ -5,12 +5,12 @@ Future<void> createTarball(String folderPath, String tarPath) async {
 
   // Check if source folder exists
   if (!await sourceDir.exists()) {
-    print('❌ Error: Folder does not exist: $folderPath');
+    print('❌ | Error: Folder does not exist: $folderPath');
     return;
   }
 
-  print('📦 Creating TAR archive from: $folderPath');
-  print('💾 Output: $tarPath');
+  print('📦 | Creating TAR archive from: $folderPath');
+  print('💾 | Output: $tarPath');
 
   // Ensure output directory exists
   await File(tarPath).parent.create(recursive: true);
@@ -24,9 +24,9 @@ Future<void> createTarball(String folderPath, String tarPath) async {
   if (result.exitCode == 0) {
     final fileSize = await File(tarPath).length();
     final sizeKB = (fileSize / 1024).toStringAsFixed(2);
-    print('✅ Success! Created $tarPath (${sizeKB} KB)');
+    print('✅  | Success! Created $tarPath (${sizeKB} KB)');
   } else {
-    print('❌ tar command failed:\n${result.stderr}');
+    print('❌  | tar command failed:\n${result.stderr}');
   }
 }
 
@@ -37,7 +37,7 @@ Future<void> main() async {
   try {
     await createTarball(folderPath, tarPath);
   } catch (e) {
-    print('❌ Error: $e');
+    print('❌  | Error: $e');
     exit(1);
   }
 }

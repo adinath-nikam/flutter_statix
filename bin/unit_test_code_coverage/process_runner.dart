@@ -1,13 +1,10 @@
 import 'dart:io';
 
-/// Handles process execution with streaming and standard output
-class ProcessExecutor {
-  /// Run a process and return the result
+class ProcessRunner {
   Future<ProcessResult> run(String executable, List<String> arguments) async {
     return await Process.run(executable, arguments);
   }
 
-  /// Run a process with real-time output streaming
   Future<int> runWithStreaming(
       String executable,
       List<String> arguments,
@@ -29,9 +26,9 @@ class ProcessExecutor {
 
   void _logProcessResult(String processName, int exitCode) {
     if (exitCode == 0) {
-      print('✅  | $processName completed successfully');
+      print('✅  | $processName Completed Successfully');
     } else {
-      print('❌  | $processName failed with exit code $exitCode');
+      print('❌  | $processName Failed with Exit Code $exitCode');
     }
   }
 }
