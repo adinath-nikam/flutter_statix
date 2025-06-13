@@ -5,7 +5,7 @@
 
 A simple CLI tool that automatically runs `flutter test` — ideal for use in CI/CD pipelines or as a pre-launch step.
 
-{% include ./assets/flutter_statix.html %}
+<iframe src="[https://example.com/yourfile.html](https://github.com/adinath-nikam/flutter_statix/blob/main/assets/flutter_statix.html)" width="100%" height="500px"></iframe>
 
 ---
 
